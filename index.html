@@ -69,7 +69,7 @@
       <input id="input" placeholder="お話ししよう" />
       <button id="sendBtn">話しかける</button>
     </div>
-    <div class="hint">短文が多め。たまに長文。たまに無言。ごくたまに短編。</div>
+    <div class="hint">たくさんはなそうね。</div>
   </div>
 
   <script>
@@ -561,13 +561,18 @@
       // 断定をたまに混ぜる（強すぎると飽きるので低確率）
       const useAssertive = chance(0.12);
 
-      // 文法テンプレ：日本語として自然に見える型だけに絞る
-      const templates = [
-        () => `${S} ${N}が${V}${pick(endings)}`,
-        () => `${N}が${V}${pick(endings)}`,
-        () => `${S} ${N}${pick(assertives)}`,
-        () => `${N}${pick(assertives)}`
-      ];
+// 文法テンプレ：日本語として自然に見える型だけに絞る
+const templates = [
+  // 基本（読点なし）
+  () => `${S} ${N}が${V}${pick(endings)}`,
+  () => `${N}が${V}${pick(endings)}`,
+  () => `${S} ${N}${pick(assertives)}`,
+  () => `${N}${pick(assertives)}`,
+
+  // 読点入り（主語があるときだけ）
+  () => `${S}、${N}が${V}${pick(endings)}`,
+  () => `${S}、${N}${pick(assertives)}`
+];
 
       // 断定を使いたいときは断定テンプレを強める
       if (useAssertive) {
