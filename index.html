@@ -600,13 +600,20 @@
     // --------- UI ---------
     const replyEl = document.getElementById("reply");
     const inputEl = document.getElementById("input");
-    const sendBtn = document.getElementById("sendBtn");
+    const Btn = document.getElementById("Btn");
 
-    function send() {
-      // 入力は読まない。トリガーとして捨てる。
-      replyEl.textContent = generateReply();
-      inputEl.value = "";
-    }
+function send() {
+  const text = inputEl.value.trim();
+
+  // 空入力のときは固定メッセージ
+  if (text === "") {
+    replyEl.textContent = "悲しいな";
+    return;
+  }
+
+  replyEl.textContent = generateReply();
+  inputEl.value = "";
+}
 
     sendBtn.addEventListener("click", send);
     inputEl.addEventListener("keydown", (e) => {
