@@ -694,19 +694,41 @@ const templates = [
       return lines.join("\n");
     }
 
+    function makeHugeText() {
+  const count = 25 + Math.floor(Math.random() * 35); // 超クソ長文
+  const lines = [];
+
+  for (let i = 0; i < count; i++) {
+    lines.push(makeParagraphSentence());
+  }
+
+  const blanks = 3 + Math.floor(Math.random() * 6);
+  for (let i = 0; i < blanks; i++) {
+    const idx = 2 + Math.floor(Math.random() * (lines.length - 3));
+    lines.splice(idx, 0, "");
+  }
+
+  if (chance(0.6)) lines.push(pick(silences));
+
+  return lines.join("\n");
+}
+
+
     // --------- 返信タイプの制御 ---------
-    function generateReply() {
-      const r = Math.random();
+function generateReply() {
+  const r = Math.random();
 
-    // 固定短編2%
-    if (r < 0.02) return pick(shortStories);
+  // 固定短編 2%
+  if (r < 0.02) return pick(shortStories);
 
-    // 生成長文15%
-    if (r < 0.17) return makeLongText();
+  // 超クソ長文 3%
+  if (r < 0.05) return makeHugeText();
 
-      // 通常
-      return makeSentence();
-    }
+  // 通常長文 15%
+  if (r < 0.20) return makeLongText();
+
+  return makeSentence();
+}
 
     // --------- UI ---------
     const replyEl = document.getElementById("reply");
