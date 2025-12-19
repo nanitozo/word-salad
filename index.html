@@ -610,11 +610,11 @@ const templates = [
     function generateReply() {
       const r = Math.random();
 
-      // ごくたまに固定短編（2%）
-      if (r < 0.02) return pick(shortStories);
+// 固定2%はそのまま
+if (r < 0.02) return pick(shortStories);
 
-      // たまに生成長文（8%）
-      if (r < 0.10) return makeLongText();
+// 生成長文を 15% に
+if (r < 0.17) return makeLongText();
 
       // 通常
       return makeSentence();
