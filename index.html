@@ -69,7 +69,7 @@
       <input id="input" placeholder="お話ししよう" />
       <button id="sendBtn">話しかける</button>
     </div>
-    <div class="hint">短文が多め。たまに長文。たまに無言。</div>
+    <div class="hint">短文が多め。たまに長文。たまに無言。ごくたまに短編。</div>
   </div>
 
   <script>
@@ -518,6 +518,28 @@
       "また今度。"
     ];
 
+    // --------- 固定短編（レアで挿入） ---------
+    const shortStories = [
+`それについて考えていた時期が私にもありました。
+ただ、正確には考えていたというより、
+思考が勝手にそこへ流れていった、という表現の方が近いです。
+
+風呂に入っている時、
+関係のない単語が浮かび、
+それがすべて正しいような気がしていました。
+もちろん、正しくはありません。
+
+この話はここで終わります。`,
+`最初は短い話のつもりでした。
+しかし途中で、
+何を言おうとしていたのか分からなくなりました。
+
+こういうことはよくあります。
+特に意味はありません。
+
+以上です。`
+    ];
+
     // --------- ユーティリティ ---------
     function pick(arr) {
       return arr[Math.floor(Math.random() * arr.length)];
@@ -541,16 +563,10 @@
 
       // 文法テンプレ：日本語として自然に見える型だけに絞る
       const templates = [
-        // 主語あり：N が V + 語尾
         () => `${S} ${N}が${V}${pick(endings)}`,
-        // 主語なし：N が V + 語尾
         () => `${N}が${V}${pick(endings)}`,
-        // 断定：S + N + 断定
         () => `${S} ${N}${pick(assertives)}`,
-        // 断定：N + 断定
-        () => `${N}${pick(assertives)}`,
-        // ちょっとメタ：S + N が V + 断定（"は確実だ。" などが来ると崩れるので end と assert を分離）
-        () => `${S} ${N}が${V}${useAssertive ? pick(endings) : pick(endings)}`
+        () => `${N}${pick(assertives)}`
       ];
 
       // 断定を使いたいときは断定テンプレを強める
@@ -566,54 +582,56 @@
     }
 
     function makeParagraphSentence() {
-      // 句点がすでに入っている前提で、稀に改行や余韻を混ぜる
       let s = makeSentence();
       if (chance(0.08)) s = s.replace(/。$/, "。……。");
       return s;
     }
 
     function makeLongText() {
-      // 「短文の集合」で長文を作る（意味はないが文章っぽくなる）
       const count = 3 + Math.floor(Math.random() * 5); // 3〜7文
       const lines = [];
       for (let i = 0; i < count; i++) lines.push(makeParagraphSentence());
 
-      // 途中に空行を入れて“暴走感”
       if (lines.length >= 5 && chance(0.7)) {
         const idx = 2 + Math.floor(Math.random() * (lines.length - 3));
         lines.splice(idx, 0, "");
       }
-      // たまに締めの無言
       if (chance(0.25)) lines.push(pick(silences));
 
       return lines.join("\n");
     }
 
     // --------- 返信タイプの制御 ---------
-    // ほとんど短文、たまに長文、たまに無言
     function generateReply() {
       const r = Math.random();
-      if (r < 0.10) return makeLongText();     // 10% 暴走
-      return makeSentence();                   // 90% 通常（中身に無言7%が含まれる）
+
+      // ごくたまに固定短編（2%）
+      if (r < 0.02) return pick(shortStories);
+
+      // たまに生成長文（8%）
+      if (r < 0.10) return makeLongText();
+
+      // 通常
+      return makeSentence();
     }
 
     // --------- UI ---------
     const replyEl = document.getElementById("reply");
     const inputEl = document.getElementById("input");
-    const Btn = document.getElementById("Btn");
+    const sendBtn = document.getElementById("sendBtn");
 
-function send() {
-  const text = inputEl.value.trim();
+    function send() {
+      const text = inputEl.value.trim();
 
-  // 空入力のときは固定メッセージ
-  if (text === "") {
-    replyEl.textContent = "悲しいな";
-    return;
-  }
+      // 空入力のときは固定メッセージ
+      if (text === "") {
+        replyEl.textContent = "悲しいな";
+        return;
+      }
 
-  replyEl.textContent = generateReply();
-  inputEl.value = "";
-}
+      replyEl.textContent = generateReply();
+      inputEl.value = "";
+    }
 
     sendBtn.addEventListener("click", send);
     inputEl.addEventListener("keydown", (e) => {
