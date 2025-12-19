@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>なんか返すやつ</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: #111;
+      color: #eee;
+      font-family: system-ui, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wrap {
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+    }
+    .bubble {
+      padding: 16px;
+      border: 1px solid #444;
+      border-radius: 12px;
+      min-height: 4em;
+      margin-bottom: 12px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 8px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="bubble" id="reply">……</div>
+    <input id="input" placeholder="なんか打つ（意味は見ない）" />
+    <button onclick="talk()">送る</button>
+  </div>
+
+  <script>
+    const shortTexts = [
+      "そう。",
+      "……。",
+      "それはある。",
+      "今は違う。",
+      "概念。",
+      "風呂。",
+      "猫。"
+    ];
+
+    const midTexts = [
+      "それはたぶん、今じゃない。",
+      "関係ありそうで、ない。",
+      "猫の話をすると長くなる。"
+    ];
+
+    const longTexts = [
+      "それについて考えていた時期が私にもありました。\nただ、正確には考えていたというより、\n思考が勝手にそこへ流れていった、という表現の方が近いです。\n\n風呂に入っている時、\n関係のない単語が浮かび、\nそれがすべて正しいような気がしていました。\nもちろん、正しくはありません。\n\nこの話はここで終わります。",
+      "最初は短い話のつもりでした。\nしかし途中で、\n何を言おうとしていたのか分からなくなりました。\n\nこういうことはよくあります。\n特に意味はありません。\n\n以上です。"
+    ];
+
+    function pick(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function talk() {
+      const r = Math.random();
+      let text;
+      if (r < 0.1) text = pick(longTexts);
+      else if (r < 0.3) text = pick(midTexts);
+      else text = pick(shortTexts);
+      document.getElementById("reply").textContent = text;
+      document.getElementById("input").value = "";
+    }
+  </script>
+</body>
+</html>
